@@ -16,6 +16,12 @@ export default [
       globals: {
         ...globals.node
       }
+    },
+    rules: {
+      'no-magic-numbers': 'off',
+      'unicorn/prefer-module': 'off',
+      'no-undefined': 'off',
+      'unicorn/no-useless-undefined': 'off'
     }
   }
 ];
