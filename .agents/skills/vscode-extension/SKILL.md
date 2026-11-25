@@ -35,6 +35,11 @@ description: > Load this skill whenever working on the VS Code extension in this
 - Follow the `unit-testing` skill: AAA structure, test names `<state>_<act>_<expected outcome>`, one assertion aspect per test.
 - Manual smoke test: `F5` Extension Development Host, select two or three files or folders, context menu, verify KDiff3 opens.
 
+## Linting
+- `npm run lint` runs ESLint (flat config `eslint.config.mjs`): maximal set = `@eslint/js` `configs.all` plus `eslint-plugin-unicorn` `recommended`, Node globals, CommonJS.
+- Deliberately deactivated after rule-by-rule review: `no-magic-numbers`, `unicorn/prefer-module` (we stay CommonJS), `no-undefined`, `unicorn/no-useless-undefined`, `one-var`, `sort-keys`, `func-style`, `no-underscore-dangle`.
+- Not wired into CI yet — add `npm run lint` to `.github/workflows/kdiff3-compare.yaml` only once the codebase is lint-clean.
+
 ## CI and releases (see also the `ci-build-action` skill)
 - Test workflow `.github/workflows/<repo>.yaml`: `on: push/pull_request`, single Linux job, canonical step labels with a blank line between steps: `Check out the repo` (`actions/checkout@v7`) → `Set up Node.js` (`actions/setup-node@v6`, `node-version: 22`) → `Test` (`run: npm test`).
 - Release workflow `.github/workflows/release.yaml`: `on: push: tags: ['v*']` and `permissions: contents: write`; steps: checkout → setup-node → `npm install --global @vscode/vsce` → `vsce package` → `softprops/action-gh-release@v2` with `files: <name>-*.vsix` and `GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}`.
