@@ -1,6 +1,9 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const Module = require('module');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
 
 function loadExtension({ kdiff3Path = 'kdiff3', dialogResult = undefined } = {}) {
   const calls = {
@@ -87,6 +90,29 @@ test('two selected resources_invoke handler_spawns kdiff3 with both paths detach
   assert.equal(calls.spawn[0].options.detached, true);
 });
 
+test('three selected resources_invoke handler_spawns kdiff3 with three paths for three-way compare', () => {
+  const { calls } = loadExtension();
+
+  calls.handler({}, [{ fsPath: '/a' }, { fsPath: '/b' }, { fsPath: '/c' }]);
+
+  assert.equal(calls.spawn.length, 1);
+  assert.deepEqual(calls.spawn[0].args, ['/a', '/b', '/c']);
+});
+
+test('four selected resources_invoke handler_spawns with the first three paths only', () => {
+  const { calls } = loadExtension();
+
+  calls.handler({}, [
+    { fsPath: '/a' },
+    { fsPath: '/b' },
+    { fsPath: '/c' },
+    { fsPath: '/d' }
+  ]);
+
+  assert.equal(calls.spawn.length, 1);
+  assert.deepEqual(calls.spawn[0].args, ['/a', '/b', '/c']);
+});
+
 test('custom path configured_invoke handler_spawns the configured exe', () => {
   const { calls } = loadExtension({ kdiff3Path: 'C:\\Tools\\KDiff3\\kdiff3.exe' });
 
@@ -166,4 +192,32 @@ test('spawn emits error_invoke handler_shows message naming exe and setting', ()
   assert.equal(calls.errors.length, 1);
   assert.match(calls.errors[0], /\/opt\/kdiff3\/bin\/kdiff3/);
   assert.match(calls.errors[0], /kdiff3Compare\.kdiff3Path/);
+});
+
+test('mixed file and folder selected_invoke handler_shows error and spawns nothing', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'kdiff3-test-'));
+  const file = path.join(dir, 'a.txt');
+  fs.writeFileSync(file, 'x');
+  const { calls } = loadExtension();
+
+  calls.handler({}, [{ fsPath: file }, { fsPath: dir }]);
+
+  assert.equal(calls.spawn.length, 0);
+  assert.equal(calls.errors.length, 1);
+  assert.match(calls.errors[0], /file with a folder/);
+  fs.rmSync(dir, { recursive: true, force: true });
+});
+
+test('two folders selected_invoke handler_spawns with both folder paths', () => {
+  const dirA = fs.mkdtempSync(path.join(os.tmpdir(), 'kdiff3-a-'));
+  const dirB = fs.mkdtempSync(path.join(os.tmpdir(), 'kdiff3-b-'));
+  const { calls } = loadExtension();
+
+  calls.handler({}, [{ fsPath: dirA }, { fsPath: dirB }]);
+
+  assert.equal(calls.spawn.length, 1);
+  assert.deepEqual(calls.spawn[0].args, [dirA, dirB]);
+  assert.equal(calls.errors.length, 0);
+  fs.rmSync(dirA, { recursive: true, force: true });
+  fs.rmSync(dirB, { recursive: true, force: true });
 });

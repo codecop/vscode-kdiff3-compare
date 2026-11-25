@@ -1,7 +1,7 @@
 {
   "name": "kdiff3-compare",
   "displayName": "KDiff3 Compare",
-  "description": "Compare two selected files or folders with KDiff3 (Compare Selected in the Explorer context menu).",
+  "description": "Compare two or three selected files or folders with KDiff3 (Compare Selected in the Explorer context menu; three paths open the three-way view).",
   "version": "0.1.0",
   "publisher": "codecop",
   "license": "MIT",
@@ -33,6 +33,11 @@
           "command": "kdiff3.compareSelected",
           "when": "listDoubleSelection",
           "group": "3_compare@5"
+        },
+        {
+          "command": "kdiff3.compareSelected",
+          "when": "listMultiSelection && !listDoubleSelection",
+          "group": "3_compare@6"
         }
       ]
     },
