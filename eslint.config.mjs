@@ -21,6 +21,7 @@ export default [
       'no-magic-numbers': 'off',
       'one-var': 'off',
       'sort-keys': 'off',
+      'func-style': 'off',
       'unicorn/prefer-module': 'off',
       'no-undefined': 'off',
       'unicorn/no-useless-undefined': 'off'
