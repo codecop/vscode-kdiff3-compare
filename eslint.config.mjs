@@ -19,6 +19,7 @@ export default [
     },
     rules: {
       'no-magic-numbers': 'off',
+      'one-var': 'off',
       'unicorn/prefer-module': 'off',
       'no-undefined': 'off',
       'unicorn/no-useless-undefined': 'off'
