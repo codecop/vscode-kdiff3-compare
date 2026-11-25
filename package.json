@@ -1,0 +1,47 @@
+{
+  "name": "kdiff3-compare",
+  "displayName": "KDiff3 Compare",
+  "description": "Vergleicht zwei ausgewählte Dateien mit KDiff3 (Compare Selected im Explorer-Kontextmenü).",
+  "version": "0.1.0",
+  "publisher": "codecop",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codecop/vscode-kdiff3-compare.git"
+  },
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "kdiff3.compareSelected",
+        "title": "Compare Selected with KDiff3",
+        "category": "KDiff3"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "kdiff3.compareSelected",
+          "when": "listDoubleSelection",
+          "group": "3_compare@5"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "KDiff3 Compare",
+      "properties": {
+        "kdiff3Compare.kdiff3Path": {
+          "type": "string",
+          "default": "kdiff3",
+          "markdownDescription": "Pfad zur KDiff3-Executable, z. B. `C:\\Program Files\\KDiff3\\kdiff3.exe` (Windows) oder `/usr/bin/kdiff3` (Linux/macOS). Standard `kdiff3` verwendet die PATH-Variable."
+        }
+      }
+    }
+  }
+}
