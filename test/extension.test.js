@@ -79,6 +79,8 @@ function loadExtension({ kdiff3Path = 'kdiff3', dialogResult = undefined } = {})
 
 const tick = () => new Promise((resolve) => setImmediate(resolve));
 
+const testUnlessWindows = process.platform === 'win32' ? test.skip : test;
+
 test('two selected resources_invoke handler_spawns kdiff3 with both paths detached', () => {
   const { calls } = loadExtension();
 
@@ -114,7 +116,7 @@ test('four selected resources_invoke handler_spawns with the first three paths o
   assert.equal(calls.warnings.length, 1);
 });
 
-test('unstatable path like a broken symlink_invoke handler_treated as not mixed and still spawns', () => {
+testUnlessWindows('unstatable path like a broken symlink_invoke handler_treated as not mixed and still spawns', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'kdiff3-link-'));
   const link = path.join(dir, 'broken');
   fs.symlinkSync(path.join(dir, 'does-not-exist'), link);
