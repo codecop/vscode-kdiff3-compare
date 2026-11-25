@@ -12,6 +12,14 @@ them (for folders, KDiff3 shows its directory comparison).
 Without a selection (e.g. from the Command Palette) the command opens a file
 dialog and expects exactly two files or folders.
 
+## Unit tests
+The command logic is tested with plain Node (`node:test`), mocking the
+`vscode` API and `child_process` — no VS Code download needed:
+
+```sh
+npm test
+```
+
 ## Settings
 `kdiff3Compare.kdiff3Path` — full path to the KDiff3 executable:
 
