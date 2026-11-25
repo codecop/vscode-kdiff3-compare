@@ -17,7 +17,7 @@
   ],
   "main": "./extension.js",
   "scripts": {
-    "test": "node --test test/"
+    "test": "node --test"
   },
   "contributes": {
     "commands": [
