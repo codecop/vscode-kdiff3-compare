@@ -2,6 +2,7 @@ name: Test kdiff3-compare
 
 on:
   push:
+    branches: ['main']
   pull_request:
 
 jobs:
