@@ -1,30 +1,58 @@
 {
   "name": "kdiff3-compare",
   "displayName": "KDiff3 Compare",
-  "description": "Compare two or three selected files or folders with KDiff3 (Compare Selected in the Explorer context menu; three paths open the three-way view).",
+  "description": "Compare two or three selected files or folders with KDiff3 — Compare Selected in the Explorer context menu, with a setting for the KDiff3 executable path. 100% vibe coded ;-)",
   "version": "0.1.0",
   "publisher": "codecop",
   "license": "MIT",
+  "homepage": "https://github.com/codecop/vscode-kdiff3-compare",
   "repository": {
     "type": "git",
     "url": "https://github.com/codecop/vscode-kdiff3-compare.git"
+  },
+  "bugs": {
+    "url": "https://github.com/codecop/vscode-kdiff3-compare/issues"
   },
   "engines": {
     "vscode": "^1.74.0"
   },
   "categories": [
+    "Visualization",
     "Other"
+  ],
+  "keywords": [
+    "kdiff3",
+    "diff",
+    "compare",
+    "merge",
+    "three-way",
+    "folder compare",
+    "external tool"
+  ],
+  "icon": "images/icon.png",
+  "galleryBanner": {
+    "color": "#1E1E1E",
+    "theme": "dark"
+  },
+  "badges": [
+    {
+      "url": "https://img.shields.io/github/actions/workflow/status/codecop/vscode-kdiff3-compare/kdiff3-compare.yaml?branch=main",
+      "href": "https://github.com/codecop/vscode-kdiff3-compare/actions/workflows/kdiff3-compare.yaml",
+      "description": "CI"
+    }
   ],
   "main": "./extension.js",
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "package": "vsce package"
   },
   "contributes": {
     "commands": [
       {
         "command": "kdiff3.compareSelected",
         "title": "Compare Selected with KDiff3",
-        "category": "KDiff3"
+        "category": "KDiff3",
+        "icon": "$(diff)"
       }
     ],
     "menus": {
@@ -47,7 +75,7 @@
         "kdiff3Compare.kdiff3Path": {
           "type": "string",
           "default": "kdiff3",
-          "markdownDescription": "Path to the KDiff3 executable, e.g. `C:\\Program Files\\KDiff3\\kdiff3.exe` (Windows) or `/usr/bin/kdiff3` (Linux/macOS). The default `kdiff3` uses the PATH variable."
+          "markdownDescription": "Path to the KDiff3 executable (the .exe/binary, not a .bat/.cmd), e.g. `C:\\Program Files\\KDiff3\\kdiff3.exe` (Windows) or `/usr/bin/kdiff3` (Linux/macOS). The default `kdiff3` uses the PATH variable."
         }
       }
     }
