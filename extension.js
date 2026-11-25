@@ -1,6 +1,6 @@
 const vscode = require('vscode');
 const { spawn } = require('child_process');
-const { existsSync, statSync } = require('fs');
+const { statSync } = require('fs');
 
 function kdiff3Exe() {
   const configured = vscode.workspace
@@ -13,10 +13,12 @@ function containsMixedFileAndFolder(paths) {
   let hasFile = false;
   let hasFolder = false;
   for (const p of paths) {
-    if (!existsSync(p)) {
+    let stat;
+    try {
+      stat = statSync(p);
+    } catch {
       continue;
     }
-    const stat = statSync(p);
     hasFile = hasFile || stat.isFile();
     hasFolder = hasFolder || stat.isDirectory();
   }
@@ -69,6 +71,11 @@ function activate(context) {
       (resource, resources) => {
         let paths = [];
         if (Array.isArray(resources) && resources.length >= 2) {
+          if (resources.length > 3) {
+            vscode.window.showWarningMessage(
+              'More than three items selected — comparing the first three with KDiff3.'
+            );
+          }
           paths = resources.slice(0, 3).map((u) => u.fsPath);
         } else if (resource && resource.fsPath) {
           paths = [resource.fsPath];

@@ -111,6 +111,21 @@ test('four selected resources_invoke handler_spawns with the first three paths o
 
   assert.equal(calls.spawn.length, 1);
   assert.deepEqual(calls.spawn[0].args, ['/a', '/b', '/c']);
+  assert.equal(calls.warnings.length, 1);
+});
+
+test('unstatable path like a broken symlink_invoke handler_treated as not mixed and still spawns', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'kdiff3-link-'));
+  const link = path.join(dir, 'broken');
+  fs.symlinkSync(path.join(dir, 'does-not-exist'), link);
+  const { calls } = loadExtension();
+
+  calls.handler({}, [{ fsPath: link }, { fsPath: '/b.txt' }]);
+
+  assert.equal(calls.spawn.length, 1);
+  assert.deepEqual(calls.spawn[0].args, [link, '/b.txt']);
+  assert.equal(calls.errors.length, 0);
+  fs.rmSync(dir, { recursive: true, force: true });
 });
 
 test('custom path configured_invoke handler_spawns the configured exe', () => {
