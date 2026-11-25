@@ -1,7 +1,7 @@
 {
   "name": "kdiff3-compare",
   "displayName": "KDiff3 Compare",
-  "description": "Compare two selected files with KDiff3 (Compare Selected in the Explorer context menu).",
+  "description": "Compare two selected files or folders with KDiff3 (Compare Selected in the Explorer context menu).",
   "version": "0.1.0",
   "publisher": "codecop",
   "license": "MIT",
