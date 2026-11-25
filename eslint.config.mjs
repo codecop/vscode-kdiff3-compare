@@ -24,6 +24,7 @@ export default [
       'one-var': 'off',
       'sort-keys': 'off',
       'func-style': 'off',
+      'no-underscore-dangle': 'off',
       'unicorn/prefer-module': 'off',
       'no-undefined': 'off',
       'unicorn/no-useless-undefined': 'off'
