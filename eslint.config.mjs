@@ -16,7 +16,9 @@ export default [
       globals: {
         ...globals.node
       }
-    },
+    }
+  },
+  {
     rules: {
       'no-magic-numbers': 'off',
       'one-var': 'off',
