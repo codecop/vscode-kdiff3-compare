@@ -44,6 +44,7 @@
   "main": "./extension.js",
   "scripts": {
     "test": "node --test",
+    "lint": "eslint .",
     "package": "vsce package"
   },
   "contributes": {
@@ -79,5 +80,11 @@
         }
       }
     }
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.15.0",
+    "eslint-plugin-unicorn": "^80.0.0",
+    "globals": "^17.14.0"
   }
 }
