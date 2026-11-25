@@ -4,7 +4,7 @@
   "description": "Compare two or three selected files or folders with KDiff3 — Compare Selected in the Explorer context menu, with a setting for the KDiff3 executable path. 100% vibe coded ;-)",
   "version": "0.1.0",
   "publisher": "codecop",
-  "license": "MIT",
+  "license": "BSD-3-Clause",
   "homepage": "https://github.com/codecop/vscode-kdiff3-compare",
   "repository": {
     "type": "git",
