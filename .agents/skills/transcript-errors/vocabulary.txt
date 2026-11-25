@@ -1,0 +1,31 @@
+# Speech vocabulary: phonetic mishearings (ASR transcript errors) -> correct form
+# One pair per line. Only sound-based transcript errors per the skill's rules 1-3
+# (sound-alike/homophones, context, typical patterns: dropped words, DE/EN technical
+# terms, truncations). Plain typos, letter swaps, umlaut and casing slips are corrected
+# inline and deliberately not listed here.
+already for refusals -> ready for review setzen
+betrufft -> betrifft
+Bildsystem -> Buildsystem
+bulid -> build
+c-Mokka -> cmocka
+Connect-Mistral-MD -> CONNECT-MISTRAL.md
+data -> Daten
+entfirmen -> entfernen
+erszens -> ersetze
+excemp -> exempt
+helpets -> helpers
+infert -> inferiert
+Kommandozeil -> Kommandozeile
+Koyab -> Koyeb
+kwey values -> key-values / Key-Value-Paare
+Misstrauen -> Mistral
+papiricrepo -> public repo
+requirelements.md -> requirements.md
+scriptsa -> scripts
+sgeet -> speichert / gespeichert
+skill md -> SKILL.md
+soveteign -> souverän
+vocabulary file -> Vokabular-Datei
+vompilietre -> kompilierte
+webszche -> welche
+wieviel -> wie viel
