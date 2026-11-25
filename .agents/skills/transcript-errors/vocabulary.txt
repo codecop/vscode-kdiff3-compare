@@ -3,13 +3,17 @@
 # (sound-alike/homophones, context, typical patterns: dropped words, DE/EN technical
 # terms, truncations). Plain typos, letter swaps, umlaut and casing slips are corrected
 # inline and deliberately not listed here.
+abdaten -> abgleichen
 already for refusals -> ready for review setzen
 betrufft -> betrifft
 Bildsystem -> Buildsystem
 bulid -> build
 c-Mokka -> cmocka
+ci action skill -> ci-build-action Skill
 Connect-Mistral-MD -> CONNECT-MISTRAL.md
 data -> Daten
+dice namer repo -> naming-by-dices Repo
+dicer -> dice
 entfirmen -> entfernen
 erszens -> ersetze
 excemp -> exempt
@@ -24,8 +28,13 @@ requirelements.md -> requirements.md
 scriptsa -> scripts
 sgeet -> speichert / gespeichert
 skill md -> SKILL.md
+skkillt -> Skill
 soveteign -> souverän
+Transaktionsfehler -> Transkriptfehler
 vocabulary file -> Vokabular-Datei
+voice-code -> DiffTool (Kontext: Plugin-Vergleich)
+voice-datei -> vocabulary.txt
 vompilietre -> kompilierte
 webszche -> welche
 wieviel -> wie viel
+xterm -> extern
