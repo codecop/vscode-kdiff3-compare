@@ -1,7 +1,7 @@
 {
   "name": "kdiff3-compare",
   "displayName": "KDiff3 Compare",
-  "description": "Vergleicht zwei ausgewählte Dateien mit KDiff3 (Compare Selected im Explorer-Kontextmenü).",
+  "description": "Compare two selected files with KDiff3 (Compare Selected in the Explorer context menu).",
   "version": "0.1.0",
   "publisher": "codecop",
   "license": "MIT",
@@ -39,7 +39,7 @@
         "kdiff3Compare.kdiff3Path": {
           "type": "string",
           "default": "kdiff3",
-          "markdownDescription": "Pfad zur KDiff3-Executable, z. B. `C:\\Program Files\\KDiff3\\kdiff3.exe` (Windows) oder `/usr/bin/kdiff3` (Linux/macOS). Standard `kdiff3` verwendet die PATH-Variable."
+          "markdownDescription": "Path to the KDiff3 executable, e.g. `C:\\Program Files\\KDiff3\\kdiff3.exe` (Windows) or `/usr/bin/kdiff3` (Linux/macOS). The default `kdiff3` uses the PATH variable."
         }
       }
     }

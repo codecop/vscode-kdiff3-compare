@@ -16,8 +16,8 @@ function launchKDiff3(fileA, fileB) {
   });
   child.on('error', (err) => {
     vscode.window.showErrorMessage(
-      `KDiff3 konnte nicht gestartet werden (${exe}): ${err.message}. ` +
-        'Bitte Pfad in den Einstellungen (kdiff3Compare.kdiff3Path) setzen.'
+      `Could not start KDiff3 (${exe}): ${err.message}. ` +
+        'Set the path in the settings (kdiff3Compare.kdiff3Path).'
     );
   });
   child.unref();
@@ -28,14 +28,14 @@ async function pickTwoFiles() {
     canSelectFiles: true,
     canSelectFolders: false,
     canSelectMany: true,
-    openLabel: 'Mit KDiff3 vergleichen',
-    title: 'Genau zwei Dateien auswählen'
+    openLabel: 'Compare with KDiff3',
+    title: 'Select exactly two files'
   });
   if (!uris) {
     return;
   }
   if (uris.length !== 2) {
-    vscode.window.showWarningMessage('Bitte genau zwei Dateien auswählen.');
+    vscode.window.showWarningMessage('Please select exactly two files.');
     return;
   }
   launchKDiff3(uris[0].fsPath, uris[1].fsPath);

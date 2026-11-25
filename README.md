@@ -1,24 +1,24 @@
 # KDiff3 Compare
 
-Minimale VS Code Extension: Zwei Dateien im Explorer auswählen → Rechtsklick →
-**Compare Selected with KDiff3** → KDiff3 öffnet sich mit beiden Dateien.
+Minimal VS Code extension: select two files in the Explorer, right-click,
+**Compare Selected with KDiff3** — KDiff3 opens with both files.
 
-## Entwicklung / Test
-1. Diesen Ordner in VS Code öffnen
-2. `F5` drücken (Extension Development Host startet, siehe `.vscode/launch.json`)
-3. Im Host-Fenster: Explorer → zwei Dateien selektieren → Rechtsklick → Befehl ausführen
+## Development / Testing
+1. Open this folder in VS Code
+2. Press `F5` (the Extension Development Host starts, see `.vscode/launch.json`)
+3. In the host window: Explorer, select two files, right-click, run the command
 
-Ohne Selektion (z. B. über die Befehlspalette) öffnet der Befehl einen
-Dateiauswahldialog und erwartet genau zwei Dateien.
+Without a selection (e.g. from the Command Palette) the command opens a file
+dialog and expects exactly two files.
 
-## Einstellung
-`kdiff3Compare.kdiff3Path` — kompletter Pfad zur KDiff3-Executable:
+## Settings
+`kdiff3Compare.kdiff3Path` — full path to the KDiff3 executable:
 
 - Windows: `C:\Program Files\KDiff3\kdiff3.exe`
-- Linux/macOS: `/usr/bin/kdiff3` (oder Standard `kdiff3` für PATH)
+- Linux/macOS: `/usr/bin/kdiff3` (or the default `kdiff3` to use PATH)
 
-## Packen (optional)
+## Packaging (optional)
 ```sh
 npm install -g @vscode/vsce
-vsce package   # erzeugt kdiff3-compare-0.1.0.vsix
+vsce package   # creates kdiff3-compare-0.1.0.vsix
 ```
