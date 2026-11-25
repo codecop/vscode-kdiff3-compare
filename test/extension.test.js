@@ -1,12 +1,14 @@
+'use strict';
+
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const Module = require('module');
-const fs = require('fs');
-const os = require('os');
-const path = require('path');
+const Module = require('node:module');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
 
-function loadExtension({ kdiff3Path = 'kdiff3', dialogResult = undefined } = {}) {
-  const calls = {
+function createCalls() {
+  return {
     spawn: [],
     errors: [],
     warnings: [],
@@ -14,24 +16,35 @@ function loadExtension({ kdiff3Path = 'kdiff3', dialogResult = undefined } = {})
     dialogOptions: undefined,
     handler: undefined
   };
-  const vscodeMock = {
+}
+
+function createVscodeMock(calls, kdiff3Path, dialogResult) {
+  return {
     commands: {
       registerCommand: (id, handler) => {
         calls.handler = handler;
-        return { dispose() {} };
+        return {
+          dispose() {
+            // No-op.
+          }
+        };
       }
     },
     workspace: {
       getConfiguration: (section) => ({
-        get: (key) =>
-          section === 'kdiff3Compare' && key === 'kdiff3Path' ? kdiff3Path : undefined
+        get: (key) => {
+          if (section === 'kdiff3Compare' && key === 'kdiff3Path') {
+            return kdiff3Path;
+          }
+          return undefined;
+        }
       })
     },
     window: {
-      showOpenDialog: async (options) => {
+      showOpenDialog: (options) => {
         calls.dialogs += 1;
         calls.dialogOptions = options;
-        return dialogResult;
+        return Promise.resolve(dialogResult);
       },
       showWarningMessage: (message) => {
         calls.warnings.push(message);
@@ -41,45 +54,70 @@ function loadExtension({ kdiff3Path = 'kdiff3', dialogResult = undefined } = {})
       }
     }
   };
-  const childProcessMock = {
-    spawn: (exe, args, options) => {
+}
+
+function createChildProcessMock(calls) {
+  return {
+    spawn: (exe, spawnArguments, options) => {
       const listeners = {};
       const child = {
         on: (event, callback) => {
           listeners[event] = callback;
         },
-        unref: () => {},
-        emitError: (err) => {
+        unref: () => {
+          // No-op.
+        },
+        emitError: (error) => {
           if (listeners.error) {
-            listeners.error(err);
+            listeners.error(error);
           }
         }
       };
-      calls.spawn.push({ exe, args, options, child });
+      calls.spawn.push({ exe, args: spawnArguments, options, child });
       return child;
     }
   };
+}
+
+function loadWithMocks(vscodeMock, childProcessMock) {
   const originalLoad = Module._load;
+  // eslint-disable-next-line func-names
   Module._load = function (request, ...rest) {
     if (request === 'vscode') {
       return vscodeMock;
     }
-    if (request === 'child_process') {
+    if (request === 'child_process' || request === 'node:child_process') {
       return childProcessMock;
     }
+    // eslint-disable-next-line unicorn/no-this-outside-of-class
     return originalLoad.call(this, request, ...rest);
   };
   const extensionPath = require.resolve('../extension.js');
   delete require.cache[extensionPath];
   const extension = require('../extension.js');
   Module._load = originalLoad;
+  return extension;
+}
+
+function loadExtension({ kdiff3Path = 'kdiff3', dialogResult = undefined } = {}) {
+  const calls = createCalls();
+  const extension = loadWithMocks(
+    createVscodeMock(calls, kdiff3Path, dialogResult),
+    createChildProcessMock(calls)
+  );
   extension.activate({ subscriptions: [] });
   return { calls };
 }
 
-const tick = () => new Promise((resolve) => setImmediate(resolve));
+const tick = () =>
+  new Promise((resolve) => {
+    setImmediate(resolve);
+  });
 
-const testUnlessWindows = process.platform === 'win32' ? test.skip : test;
+let testUnlessWindows = test;
+if (process.platform === 'win32') {
+  testUnlessWindows = test.skip;
+}
 
 test('two selected resources_invoke handler_spawns kdiff3 with both paths detached', () => {
   const { calls } = loadExtension();
@@ -117,9 +155,9 @@ test('four selected resources_invoke handler_spawns with the first three paths o
 });
 
 testUnlessWindows('unstatable path like a broken symlink_invoke handler_treated as not mixed and still spawns', () => {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'kdiff3-link-'));
-  const link = path.join(dir, 'broken');
-  fs.symlinkSync(path.join(dir, 'does-not-exist'), link);
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'kdiff3-link-'));
+  const link = path.join(directory, 'broken');
+  fs.symlinkSync(path.join(directory, 'does-not-exist'), link);
   const { calls } = loadExtension();
 
   calls.handler({}, [{ fsPath: link }, { fsPath: '/b.txt' }]);
@@ -127,19 +165,20 @@ testUnlessWindows('unstatable path like a broken symlink_invoke handler_treated 
   assert.equal(calls.spawn.length, 1);
   assert.deepEqual(calls.spawn[0].args, [link, '/b.txt']);
   assert.equal(calls.errors.length, 0);
-  fs.rmSync(dir, { recursive: true, force: true });
+  fs.rmSync(directory, { recursive: true, force: true });
 });
 
 test('custom path configured_invoke handler_spawns the configured exe', () => {
-  const { calls } = loadExtension({ kdiff3Path: 'C:\\Tools\\KDiff3\\kdiff3.exe' });
+  const exePath = String.raw`C:\Tools\KDiff3\kdiff3.exe`;
+  const { calls } = loadExtension({ kdiff3Path: exePath });
 
   calls.handler({}, [{ fsPath: '/a' }, { fsPath: '/b' }]);
 
-  assert.equal(calls.spawn[0].exe, 'C:\\Tools\\KDiff3\\kdiff3.exe');
+  assert.equal(calls.spawn[0].exe, exePath);
 });
 
 test('blank path configured_invoke handler_falls back to kdiff3 on PATH', () => {
-  const { calls } = loadExtension({ kdiff3Path: '   ' });
+  const { calls } = loadExtension({ kdiff3Path: ' '.repeat(3) });
 
   calls.handler({}, [{ fsPath: '/a' }, { fsPath: '/b' }]);
 
@@ -207,34 +246,34 @@ test('spawn emits error_invoke handler_shows message naming exe and setting', ()
   calls.spawn[0].child.emitError(new Error('ENOENT'));
 
   assert.equal(calls.errors.length, 1);
-  assert.match(calls.errors[0], /\/opt\/kdiff3\/bin\/kdiff3/);
-  assert.match(calls.errors[0], /kdiff3Compare\.kdiff3Path/);
+  assert.match(calls.errors[0], /\/opt\/kdiff3\/bin\/kdiff3/u);
+  assert.match(calls.errors[0], /kdiff3Compare\.kdiff3Path/u);
 });
 
 test('mixed file and folder selected_invoke handler_shows error and spawns nothing', () => {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'kdiff3-test-'));
-  const file = path.join(dir, 'a.txt');
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'kdiff3-test-'));
+  const file = path.join(directory, 'a.txt');
   fs.writeFileSync(file, 'x');
   const { calls } = loadExtension();
 
-  calls.handler({}, [{ fsPath: file }, { fsPath: dir }]);
+  calls.handler({}, [{ fsPath: file }, { fsPath: directory }]);
 
   assert.equal(calls.spawn.length, 0);
   assert.equal(calls.errors.length, 1);
-  assert.match(calls.errors[0], /file with a folder/);
-  fs.rmSync(dir, { recursive: true, force: true });
+  assert.match(calls.errors[0], /file with a folder/u);
+  fs.rmSync(directory, { recursive: true, force: true });
 });
 
 test('two folders selected_invoke handler_spawns with both folder paths', () => {
-  const dirA = fs.mkdtempSync(path.join(os.tmpdir(), 'kdiff3-a-'));
-  const dirB = fs.mkdtempSync(path.join(os.tmpdir(), 'kdiff3-b-'));
+  const directoryA = fs.mkdtempSync(path.join(os.tmpdir(), 'kdiff3-a-'));
+  const directoryB = fs.mkdtempSync(path.join(os.tmpdir(), 'kdiff3-b-'));
   const { calls } = loadExtension();
 
-  calls.handler({}, [{ fsPath: dirA }, { fsPath: dirB }]);
+  calls.handler({}, [{ fsPath: directoryA }, { fsPath: directoryB }]);
 
   assert.equal(calls.spawn.length, 1);
-  assert.deepEqual(calls.spawn[0].args, [dirA, dirB]);
+  assert.deepEqual(calls.spawn[0].args, [directoryA, directoryB]);
   assert.equal(calls.errors.length, 0);
-  fs.rmSync(dirA, { recursive: true, force: true });
-  fs.rmSync(dirB, { recursive: true, force: true });
+  fs.rmSync(directoryA, { recursive: true, force: true });
+  fs.rmSync(directoryB, { recursive: true, force: true });
 });

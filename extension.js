@@ -1,45 +1,60 @@
+'use strict';
+
 const vscode = require('vscode');
-const { spawn } = require('child_process');
-const { statSync } = require('fs');
+const { spawn } = require('node:child_process');
+const { statSync } = require('node:fs');
 
 function kdiff3Exe() {
   const configured = vscode.workspace
     .getConfiguration('kdiff3Compare')
     .get('kdiff3Path');
-  return configured && configured.trim() ? configured.trim() : 'kdiff3';
+  if (configured && configured.trim()) {
+    return configured.trim();
+  }
+  return 'kdiff3';
+}
+
+function statKind(path) {
+  try {
+    const stat = statSync(path);
+    if (stat.isFile()) {
+      return 'file';
+    }
+    if (stat.isDirectory()) {
+      return 'folder';
+    }
+    return 'unknown';
+  } catch {
+    return 'unknown';
+  }
 }
 
 function containsMixedFileAndFolder(paths) {
   let hasFile = false;
   let hasFolder = false;
-  for (const p of paths) {
-    let stat;
-    try {
-      stat = statSync(p);
-    } catch {
-      continue;
-    }
-    hasFile = hasFile || stat.isFile();
-    hasFolder = hasFolder || stat.isDirectory();
+  for (const path of paths) {
+    const kind = statKind(path);
+    hasFile ||= kind === 'file';
+    hasFolder ||= kind === 'folder';
   }
   return hasFile && hasFolder;
 }
 
 function launchKDiff3(paths) {
-  const exe = kdiff3Exe();
   if (containsMixedFileAndFolder(paths)) {
     vscode.window.showErrorMessage(
       'KDiff3 cannot compare a file with a folder. Select only files or only folders.'
     );
     return;
   }
+  const exe = kdiff3Exe();
   const child = spawn(exe, paths, {
     detached: true,
     stdio: 'ignore'
   });
-  child.on('error', (err) => {
+  child.on('error', (error) => {
     vscode.window.showErrorMessage(
-      `Could not start KDiff3 (${exe}): ${err.message}. ` +
+      `Could not start KDiff3 (${exe}): ${error.message}. ` +
         'Set the path in the settings (kdiff3Compare.kdiff3Path).'
     );
   });
@@ -76,7 +91,7 @@ function activate(context) {
               'More than three items selected — comparing the first three with KDiff3.'
             );
           }
-          paths = resources.slice(0, 3).map((u) => u.fsPath);
+          paths = resources.slice(0, 3).map((uri) => uri.fsPath);
         } else if (resource && resource.fsPath) {
           paths = [resource.fsPath];
         }
@@ -90,6 +105,8 @@ function activate(context) {
   );
 }
 
-function deactivate() {}
+function deactivate() {
+  // Nothing to clean up.
+}
 
 module.exports = { activate, deactivate };

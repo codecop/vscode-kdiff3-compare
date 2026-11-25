@@ -1,6 +1,6 @@
+import globals from 'globals';
 import js from '@eslint/js';
 import unicorn from 'eslint-plugin-unicorn';
-import globals from 'globals';
 
 export default [
   {
@@ -25,6 +25,7 @@ export default [
       'sort-keys': 'off',
       'func-style': 'off',
       'no-underscore-dangle': 'off',
+      'unicorn/prefer-ternary': 'off',
       'unicorn/prefer-module': 'off',
       'no-undefined': 'off',
       'unicorn/no-useless-undefined': 'off'
