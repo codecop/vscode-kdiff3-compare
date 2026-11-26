@@ -71,6 +71,11 @@ function createChildProcessMock(calls) {
           if (listeners.error) {
             listeners.error(error);
           }
+        },
+        emitExit: (code) => {
+          if (listeners.exit) {
+            listeners.exit(code);
+          }
         }
       };
       calls.spawn.push({ exe, args: spawnArguments, options, child });
@@ -248,6 +253,26 @@ test('spawn emits error_invoke handler_shows message naming exe and setting', ()
   assert.equal(calls.errors.length, 1);
   assert.match(calls.errors[0], /\/opt\/kdiff3\/bin\/kdiff3/u);
   assert.match(calls.errors[0], /kdiff3Compare\.kdiff3Path/u);
+});
+
+test('non-zero exit code_invoke handler_shows plain error without the settings hint', () => {
+  const { calls } = loadExtension();
+
+  calls.handler({}, [{ fsPath: '/a' }, { fsPath: '/b' }]);
+  calls.spawn[0].child.emitExit(2);
+
+  assert.equal(calls.errors.length, 1);
+  assert.match(calls.errors[0], /exited with code 2/u);
+  assert.doesNotMatch(calls.errors[0], /kdiff3Compare\.kdiff3Path/u);
+});
+
+test('zero exit code_invoke handler_shows no error', () => {
+  const { calls } = loadExtension();
+
+  calls.handler({}, [{ fsPath: '/a' }, { fsPath: '/b' }]);
+  calls.spawn[0].child.emitExit(0);
+
+  assert.equal(calls.errors.length, 0);
 });
 
 test('mixed file and folder selected_invoke handler_shows error and spawns nothing', () => {

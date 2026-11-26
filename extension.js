@@ -58,6 +58,11 @@ function launchKDiff3(paths) {
         'Set the path in the settings (kdiff3Compare.kdiff3Path).'
     );
   });
+  child.on('exit', (code) => {
+    if (code !== 0) {
+      vscode.window.showErrorMessage(`KDiff3 exited with code ${code}.`);
+    }
+  });
   child.unref();
 }
 
