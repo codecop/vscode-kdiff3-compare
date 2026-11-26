@@ -69,7 +69,7 @@ function launchKDiff3(paths) {
   });
   child.on('error', (error) => {
     vscode.window.showErrorMessage(
-      `Could not start KDiff3 (${exe}): ${error.message}. ` + 'Set kdiff3Compare.kdiff3Path.'
+      `Could not start KDiff3 (${exe}): ${error.message}. Set kdiff3Compare.kdiff3Path.`
     );
   });
   child.on('exit', (code) => {
@@ -103,7 +103,7 @@ function activate(context) {
 }
 
 function deactivate() {
-  // nothing to clean up.
+  // Nothing to clean up.
 }
 
 module.exports = { activate, deactivate };
