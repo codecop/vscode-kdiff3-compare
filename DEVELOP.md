@@ -31,7 +31,7 @@ npm run package   # vsce package -> kdiff3-compare-<version>.vsix
 `.vscodeignore` keeps the VSIX minimal — only `package.json`, `extension.js`, `README.md`, `LICENSE` and `images/icon.png` ship. Everything else (`.agents/`, `AGENTS.md`, `DEVELOP.md`, `.github/`, `test/`, eslint config, lockfile, dotfiles, `images/og-image.png`) is excluded. Verify with `npx vsce ls` before releasing.
 
 ## CI
-`.github/workflows/kdiff3-compare.yaml` runs on pushes to `main` and on pull requests: `Check out the repo` → `Set up Node.js` (22) → `npm ci` → `npm test` → `npm run lint`. Tag pushes do not trigger it (`branches: ['main']` filter).
+`.github/workflows/kdiff3-compare.yaml` runs on pushes to `main` and on pull requests: `Check out the repo` → `Set up Node.js` (22.13) → `npm ci` → `npm test` → `npm run lint`. Tag pushes do not trigger it (`branches: ['main']` filter). Node 22.13 is the minimum for the whole CI job: the unit tests alone would run on Node ≥ 18, but the lint toolchain requires it — ESLint 10 declares `^22.13.0` on the 22 line and `eslint-plugin-unicorn` 80 declares `>=22.13` (verified: Node 18 and 20 fail to load unicorn). Both workflows pin `node-version: 22.13`; the supported VS Code floor stays `^1.74.0` in `engines.vscode` (`menus.commandPalette` with `when: "false"` exists since VS Code 1.10).
 
 ## Releasing
 1. Bump `version` in `package.json`, commit on `main`, push
