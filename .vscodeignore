@@ -1,5 +1,8 @@
 .vscode/**
 .github/**
+.agents/**
+AGENTS.md
+.gitignore
 test/**
 eslint.config.mjs
 package-lock.json
