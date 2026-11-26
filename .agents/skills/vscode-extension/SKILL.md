@@ -26,7 +26,7 @@ description: > Load this skill whenever working on the VS Code extension in this
 - User-facing feedback via `showErrorMessage`/`showWarningMessage` with actionable text, not console logging.
 
 ## Packaging
-- `.vscodeignore` must exclude `.vscode/**`, `.github/**`, `test/**`, `node_modules/**`, `*.vsix` — but keep `images/` and `README.md`.
+- `.vscodeignore` must exclude `.vscode/**`, `.github/**`, `.agents/**`, `AGENTS.md`, `DEVELOP.md`, dotfiles, `test/**`, `node_modules/**`, eslint config, lockfile, `*.vsix` and non-icon images — but keep `README.md`, `LICENSE` and `images/icon.png`.
 - Always test the real artefact: `vsce package`, then install the `.vsix` via Extensions → Install from VSIX — not only F5.
 - `vsce` needs README.md, `repository`, LICENSE and the icon file present.
 

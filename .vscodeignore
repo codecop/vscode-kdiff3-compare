@@ -2,6 +2,7 @@
 .github/**
 .agents/**
 AGENTS.md
+DEVELOP.md
 .gitignore
 images/og-image.png
 test/**
