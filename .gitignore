@@ -1,7 +1,18 @@
+.DS_Store
+Thumbs.db
+
 node_modules/
 out/
 dist/
+
+releases/
 *.vsix
 .vscode-test/
-.DS_Store
-Thumbs.db
+
+# marker
+env.bat
+env_*.bat
+TODO*
+Weiter *.txt
+Weiter */
+Idee - *.txt
