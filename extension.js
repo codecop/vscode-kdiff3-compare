@@ -2,7 +2,7 @@
 
 const vscode = require('vscode');
 const { spawn } = require('node:child_process');
-const { statSync } = require('node:fs');
+const { existsSync, statSync } = require('node:fs');
 
 function kdiff3Exe() {
   const configured = vscode.workspace
@@ -40,6 +40,10 @@ function containsMixedFileAndFolder(paths) {
   return hasFile && hasFolder;
 }
 
+function looksLikePath(exe) {
+  return exe.includes('/') || exe.includes(String.raw`\`);
+}
+
 function launchKDiff3(paths) {
   if (containsMixedFileAndFolder(paths)) {
     vscode.window.showErrorMessage(
@@ -48,6 +52,12 @@ function launchKDiff3(paths) {
     return;
   }
   const exe = kdiff3Exe();
+  if (looksLikePath(exe) && !existsSync(exe)) {
+    vscode.window.showErrorMessage(
+      `KDiff3 executable not found: ${exe}. Set the path in the settings (kdiff3Compare.kdiff3Path).`
+    );
+    return;
+  }
   const child = spawn(exe, paths, {
     detached: true,
     stdio: 'ignore'
