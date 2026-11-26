@@ -9,7 +9,6 @@ Compare two or three selected files or folders with [KDiff3](https://kdiff3.com/
 ## Features
 - Select **two** files or folders in the Explorer → right-click → **Compare Selected with KDiff3**: side-by-side diff for files, directory comparison for folders
 - Select **three** items: KDiff3 opens its three-way view
-- From the Command Palette the command opens a picker and expects exactly two files or folders
 - Mixed file + folder selections are rejected with a clear error message
 
 ## Requirements

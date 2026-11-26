@@ -15,7 +15,7 @@ description: > Load this skill whenever working on the VS Code extension in this
 - Exactly two selected items: `when: "listDoubleSelection"`.
 - Three or more: `when: "listMultiSelection && !listDoubleSelection"` (same command; up to three paths open KDiff3's three-way view).
 - Use the built-in group `3_compare@…` so the entry sits next to VS Code's own Compare.
-- Command handlers must also work without arguments (Command Palette) — fall back to a file picker.
+- Commands shown only in the Explorer must be hidden from the Command Palette via a `commandPalette` menu entry with `when: "false"`. Handlers must still tolerate being called without arguments — react with a short hint message instead of crashing or doing nothing.
 
 ## Code rules
 - Spawn external tools with `spawn(exe, [args], { detached: true, stdio: 'ignore' })` and `child.unref()` — never `exec` or shell strings (injection risk, spaces in paths). Note: a `.bat`/`.cmd` setting would need `shell: true`; the setting expects the exe/binary.

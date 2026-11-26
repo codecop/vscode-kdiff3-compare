@@ -57,6 +57,12 @@
       }
     ],
     "menus": {
+      "commandPalette": [
+        {
+          "command": "kdiff3.compareSelected",
+          "when": "false"
+        }
+      ],
       "explorer/context": [
         {
           "command": "kdiff3.compareSelected",

@@ -8,13 +8,12 @@ function createCalls() {
     spawn: [],
     errors: [],
     warnings: [],
-    dialogs: 0,
-    dialogOptions: undefined,
+    infos: [],
     handler: undefined
   };
 }
 
-function createVscodeMock(calls, kdiff3Path, dialogResult) {
+function createVscodeMock(calls, kdiff3Path) {
   return {
     commands: {
       registerCommand: (id, handler) => {
@@ -37,16 +36,14 @@ function createVscodeMock(calls, kdiff3Path, dialogResult) {
       })
     },
     window: {
-      showOpenDialog: (options) => {
-        calls.dialogs += 1;
-        calls.dialogOptions = options;
-        return Promise.resolve(dialogResult);
-      },
       showWarningMessage: (message) => {
         calls.warnings.push(message);
       },
       showErrorMessage: (message) => {
         calls.errors.push(message);
+      },
+      showInformationMessage: (message) => {
+        calls.infos.push(message);
       }
     }
   };
@@ -100,24 +97,19 @@ function loadWithMocks(vscodeMock, childProcessMock) {
   return extension;
 }
 
-function loadExtension({ kdiff3Path = 'kdiff3', dialogResult = undefined } = {}) {
+function loadExtension({ kdiff3Path = 'kdiff3' } = {}) {
   const calls = createCalls();
   const extension = loadWithMocks(
-    createVscodeMock(calls, kdiff3Path, dialogResult),
+    createVscodeMock(calls, kdiff3Path),
     createChildProcessMock(calls)
   );
   extension.activate({ subscriptions: [] });
   return { calls };
 }
 
-const tick = () =>
-  new Promise((resolve) => {
-    setImmediate(resolve);
-  });
-
 let testUnlessWindows = nodeTest;
 if (process.platform === 'win32') {
   testUnlessWindows = nodeTest.skip;
 }
 
-module.exports = { loadExtension, testUnlessWindows, tick };
+module.exports = { loadExtension, testUnlessWindows };

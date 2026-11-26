@@ -10,7 +10,7 @@ Contributor setup for this extension. User-facing documentation lives in [README
 1. Press `F5` (launch config in `.vscode/launch.json`)
 2. In the host window: Explorer, select two or three files or folders, right-click, run **Compare Selected with KDiff3** — KDiff3 opens
 
-Without a selection (e.g. from the Command Palette) the command opens a file dialog and expects exactly two files or folders.
+The command is hidden from the Command Palette (`menus.commandPalette` with `when: "false"` in `package.json`), so it appears only in the Explorer context menu. Invoked without a selection (e.g. via `executeCommand`), it only shows a hint to select two or three items in the Explorer first.
 
 ## Unit tests
 ```sh

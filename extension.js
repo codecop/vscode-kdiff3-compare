@@ -81,44 +81,22 @@ function launchKDiff3(paths) {
   child.unref();
 }
 
-async function pickTwoPaths() {
-  const uris = await vscode.window.showOpenDialog({
-    canSelectFiles: true,
-    canSelectFolders: true,
-    canSelectMany: true,
-    openLabel: 'Compare with KDiff3',
-    title: 'Select exactly two files or folders'
-  });
-  if (!uris) {
-    return;
-  }
-  if (uris.length !== 2) {
-    vscode.window.showWarningMessage('Please select exactly two files or folders.');
-    return;
-  }
-  launchKDiff3([uris[0].fsPath, uris[1].fsPath]);
-}
-
 function activate(context) {
   context.subscriptions.push(
     vscode.commands.registerCommand(
       'kdiff3.compareSelected',
       (resource, resources) => {
-        let paths = [];
         if (Array.isArray(resources) && resources.length >= 2) {
           if (resources.length > 3) {
             vscode.window.showWarningMessage(
               'More than three items selected — comparing the first three with KDiff3.'
             );
           }
-          paths = resources.slice(0, 3).map((uri) => uri.fsPath);
-        } else if (resource && resource.fsPath) {
-          paths = [resource.fsPath];
-        }
-        if (paths.length >= 2) {
-          launchKDiff3(paths);
+          launchKDiff3(resources.slice(0, 3).map((uri) => uri.fsPath));
         } else {
-          pickTwoPaths();
+          vscode.window.showInformationMessage(
+            'Select two or three files or folders in the Explorer first.'
+          );
         }
       }
     )
