@@ -40,22 +40,27 @@ function containsMixedFileAndFolder(paths) {
   return hasFile && hasFolder;
 }
 
-function looksLikePath(exe) {
-  return exe.includes('/') || exe.includes(String.raw`\`);
+const pathSeparator = /[/\\]/u;
+
+function isPathLike(exe) {
+  return pathSeparator.test(exe);
+}
+
+function launchErrorMessage(paths, exe) {
+  if (containsMixedFileAndFolder(paths)) {
+    return 'KDiff3 cannot compare a file with a folder. Select only files or only folders.';
+  }
+  if (isPathLike(exe) && !existsSync(exe)) {
+    return `KDiff3 executable not found: ${exe}. Set the path in the settings (kdiff3Compare.kdiff3Path).`;
+  }
+  return undefined;
 }
 
 function launchKDiff3(paths) {
-  if (containsMixedFileAndFolder(paths)) {
-    vscode.window.showErrorMessage(
-      'KDiff3 cannot compare a file with a folder. Select only files or only folders.'
-    );
-    return;
-  }
   const exe = kdiff3Exe();
-  if (looksLikePath(exe) && !existsSync(exe)) {
-    vscode.window.showErrorMessage(
-      `KDiff3 executable not found: ${exe}. Set the path in the settings (kdiff3Compare.kdiff3Path).`
-    );
+  const launchError = launchErrorMessage(paths, exe);
+  if (launchError) {
+    vscode.window.showErrorMessage(launchError);
     return;
   }
   const child = spawn(exe, paths, {
