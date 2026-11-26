@@ -49,10 +49,3 @@ npm run package   # vsce package -> kdiff3-compare-<version>.vsix
 3. `.github/workflows/release.yaml` (triggers on tags `v*`, `permissions: contents: write`) builds the VSIX with `vsce package` and attaches it to a new GitHub release via `softprops/action-gh-release@v2`
 
 Verify with `gh run list --repo codecop/vscode-kdiff3-compare` and `gh release list --repo codecop/vscode-kdiff3-compare`.
-
-## Repository conventions
-
-- Trunk-based development on `main` only - no feature branches, no pull requests from branches; commit rules (single-line present-tense message, Vibe footer, push immediately) are in the `commit` skill
-- Skills live in `.agents/skills/`; the `vscode-extension` skill documents this repo's conventions. The generic skills (`commit`, `unit-testing`, `transcript-errors`, `ci-build-action`) are also published as workspace skills in Mistral Studio
-- British English everywhere (see `AGENTS.md`)
-- Social preview image: `images/og-image.png` (1280x640), excluded from the VSIX; upload via repo Settings -> General -> Social preview
