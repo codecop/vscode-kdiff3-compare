@@ -3,6 +3,7 @@
 .agents/**
 AGENTS.md
 .gitignore
+images/og-image.png
 test/**
 eslint.config.mjs
 package-lock.json
