@@ -1,7 +1,7 @@
 {
   "name": "kdiff3-compare",
   "displayName": "KDiff3 Compare",
-  "description": "Compare two or three selected files or folders with KDiff3 — Compare Selected in the Explorer context menu, with a setting for the KDiff3 executable path. 100% vibe coded ;-)",
+  "description": "Compare two or three selected files or folders with KDiff3 - Compare Selected in the Explorer context menu, with a setting for the KDiff3 executable path. 100% vibe coded ;-)",
   "version": "0.1.1",
   "publisher": "codecop",
   "license": "BSD-3-Clause",
@@ -24,7 +24,6 @@
     "kdiff3",
     "diff",
     "compare",
-    "merge",
     "three-way",
     "folder compare",
     "external tool"
@@ -34,13 +33,6 @@
     "color": "#1E1E1E",
     "theme": "dark"
   },
-  "badges": [
-    {
-      "url": "https://img.shields.io/github/actions/workflow/status/codecop/vscode-kdiff3-compare/kdiff3-compare.yaml?branch=main",
-      "href": "https://github.com/codecop/vscode-kdiff3-compare/actions/workflows/kdiff3-compare.yaml",
-      "description": "CI"
-    }
-  ],
   "main": "./extension.js",
   "scripts": {
     "test": "node --test",

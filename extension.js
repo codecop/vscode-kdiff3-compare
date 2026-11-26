@@ -51,7 +51,7 @@ function launchErrorMessage(paths, exe) {
     return 'KDiff3 cannot compare a file with a folder. Select only files or only folders.';
   }
   if (isPathLike(exe) && !existsSync(exe)) {
-    return `KDiff3 executable not found: ${exe}. Set the path in the settings (kdiff3Compare.kdiff3Path).`;
+    return `KDiff3 executable not found: ${exe}. Set kdiff3Compare.kdiff3Path.`;
   }
   return undefined;
 }
@@ -69,8 +69,7 @@ function launchKDiff3(paths) {
   });
   child.on('error', (error) => {
     vscode.window.showErrorMessage(
-      `Could not start KDiff3 (${exe}): ${error.message}. ` +
-        'Set the path in the settings (kdiff3Compare.kdiff3Path).'
+      `Could not start KDiff3 (${exe}): ${error.message}. ` + 'Set kdiff3Compare.kdiff3Path.'
     );
   });
   child.on('exit', (code) => {
@@ -89,7 +88,7 @@ function activate(context) {
         if (Array.isArray(resources) && resources.length >= 2) {
           if (resources.length > 3) {
             vscode.window.showWarningMessage(
-              'More than three items selected — comparing the first three with KDiff3.'
+              'More than three items selected - comparing the first three with KDiff3.'
             );
           }
           launchKDiff3(resources.slice(0, 3).map((uri) => uri.fsPath));
@@ -104,7 +103,7 @@ function activate(context) {
 }
 
 function deactivate() {
-  // Nothing to clean up.
+  // nothing to clean up.
 }
 
 module.exports = { activate, deactivate };
